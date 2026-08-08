@@ -1,0 +1,12 @@
+package com.nncollege.module.service;
+import com.nncollege.exception.ResourceNotFoundException;import com.nncollege.module.dto.*;import com.nncollege.module.entity.CollegeModuleRecord;import com.nncollege.module.repository.CollegeModuleRecordRepository;import org.springframework.data.domain.*;import org.springframework.stereotype.Service;import org.springframework.transaction.annotation.Transactional;
+@Service @Transactional public class CollegeModuleServiceImpl implements CollegeModuleService {
+ private final CollegeModuleRecordRepository repo; public CollegeModuleServiceImpl(CollegeModuleRecordRepository repo){this.repo=repo;}
+ public ModuleRecordResponse create(String m,ModuleRecordRequest r){return to(repo.save(CollegeModuleRecord.builder().moduleType(m.toUpperCase()).referenceNo(r.referenceNo()).name(r.name()).status(r.status()==null?"ACTIVE":r.status()).details(r.details()).owner(r.owner()).amount(r.amount()).percentage(r.percentage()).build()));}
+ @Transactional(readOnly=true) public ModuleRecordResponse get(String m,Long id){return to(repo.findById(id).filter(x->x.getModuleType().equalsIgnoreCase(m)).orElseThrow(()->new ResourceNotFoundException(m+" record not found: "+id)));}
+ @Transactional(readOnly=true) public Page<ModuleRecordResponse> list(String m,Pageable p){return repo.findByModuleTypeIgnoreCase(m,p).map(this::to);}
+ public ModuleRecordResponse update(String m,Long id,ModuleRecordRequest r){CollegeModuleRecord x=repo.findById(id).filter(v->v.getModuleType().equalsIgnoreCase(m)).orElseThrow(()->new ResourceNotFoundException(m+" record not found: "+id));x.setReferenceNo(r.referenceNo());x.setName(r.name());x.setStatus(r.status());x.setDetails(r.details());x.setOwner(r.owner());x.setAmount(r.amount());x.setPercentage(r.percentage());return to(repo.save(x));}
+ public void delete(String m,Long id){repo.delete(getEntity(m,id));}
+ private CollegeModuleRecord getEntity(String m,Long id){return repo.findById(id).filter(x->x.getModuleType().equalsIgnoreCase(m)).orElseThrow(()->new ResourceNotFoundException(m+" record not found: "+id));}
+ private ModuleRecordResponse to(CollegeModuleRecord x){return new ModuleRecordResponse(x.getId(),x.getModuleType(),x.getReferenceNo(),x.getName(),x.getStatus(),x.getDetails(),x.getOwner(),x.getAmount(),x.getPercentage(),x.getCreatedAt(),x.getUpdatedAt());}
+}
