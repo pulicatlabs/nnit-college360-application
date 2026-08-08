@@ -1,0 +1,3 @@
+package com.nncollege.module.service;
+import com.nncollege.module.dto.*;import org.springframework.data.domain.*;
+public interface CollegeModuleService { ModuleRecordResponse create(String module,ModuleRecordRequest request); ModuleRecordResponse get(String module,Long id); Page<ModuleRecordResponse> list(String module,Pageable pageable); ModuleRecordResponse update(String module,Long id,ModuleRecordRequest request); void delete(String module,Long id); }
