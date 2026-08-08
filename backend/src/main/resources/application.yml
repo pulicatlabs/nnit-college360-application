@@ -2,13 +2,25 @@ server:
   port: 8080
 spring:
   application:
-    name: nn-college360-demo
+    name: nnit-college360
   datasource:
     url: jdbc:mysql://localhost:3306/college360?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
-    username: root
-    password: root
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: false
     open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  jackson:
+    default-property-inclusion: non_null
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+college360:
+  integrations:
+    notification-base-url: ${NOTIFICATION_BASE_URL:http://localhost:8081}
