@@ -1,0 +1,14 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: nn-college360-demo
+  datasource:
+    url: jdbc:mysql://localhost:3306/college360?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
